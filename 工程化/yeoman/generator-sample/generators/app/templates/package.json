@@ -1,0 +1,7 @@
+{
+  "name": "<%= name%>",
+  "author": "<%= author%>",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT"
+}
