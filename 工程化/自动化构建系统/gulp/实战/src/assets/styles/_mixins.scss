@@ -1,0 +1,20 @@
+@mixin WH($width, $height) {
+  @include W($width);
+  @include H($height);
+}
+
+@mixin W($w) {
+  @if $w==100% {
+    width: $w;
+  } @else {
+    width: $w + px;
+  }
+}
+
+@mixin H($h) {
+  @if $h==100% {
+    height: $h;
+  } @else {
+    height: $h + px;
+  }
+}

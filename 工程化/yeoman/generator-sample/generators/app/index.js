@@ -5,9 +5,10 @@
 const path = require("path");
 const Generator = require("yeoman-generator");
 const getFilePath = require(path.join(
-  path.resolve(__filename, "../../../utils/getFilePath.js")
+  __filename,
+  "../../../utils/getFilePath.js"
 ));
-let tempPath = path.join(path.resolve(__filename, "../templates/"));
+let tempPath = path.join(__filename, "../templates/");
 module.exports = class extends Generator {
   // 以命令行询问的方式向用户发出询问
   // 在此方法中可以调用父方法的prompt()方法，发出对用户的命令行询问
