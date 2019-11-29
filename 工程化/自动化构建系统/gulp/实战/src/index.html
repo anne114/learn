@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{title}}</title>
-    <script src="/assets/scripts/index.js"></script>
+    <!-- build 和endbuild是gulp-useref模块的一对标志，下面这个表示这两个css将合并到 assets/styles/index.css-->
+    <!-- build:css assets/styles/index.css -->
+    <link rel="stylesheet" href="/assets/styles/base.css" />
     <link rel="stylesheet" href="/assets/styles/index.css" />
+    <!-- endbuild -->
   </head>
   <body>
     <h4>好可爱的猫咪</h4>
-    <div><img src="./assets/images/cat.jpg" /></div>
-    <!-- <div><img src="../public/GIF.gif" alt="" /></div> -->
-
-    <div><img src="./GIF.gif" alt="" /></div>
+    <div><img src="/assets/images/cat.jpg" /></div>
+    <div><img src="/public/GIF.gif" alt="" /></div>
+    <script src="/assets/scripts/index.js"></script>
+    <!-- node_modules目录下的文件是没有被构建到dist目录的，所以可以用gulp-useref模块将这两个文件合并到 assets/scripts/vendor.js中-->
+    <!-- build:js assets/scripts/vendor.js -->
+    <script src="/node_modules/align-text/index.js"></script>
+    <script src="/node_modules/ansi-wrap/index.js"></script>
+    <!-- endbuild -->
   </body>
 </html>

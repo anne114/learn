@@ -1,18 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>index</title>
-    <script src="/assets/scripts/index.js"></script>
-    <link rel="stylesheet" href="/assets/styles/index.css" />
-  </head>
-  <body>
-    <h4>好可爱的猫咪</h4>
-    <div><img src="./assets/images/cat.jpg" /></div>
-    <!-- <div><img src="../public/GIF.gif" alt="" /></div> -->
-
-    <div><img src="./GIF.gif" alt="" /></div>
-  </body>
-</html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>index</title><!-- build 和endbuild是gulp-useref模块的一对标志，下面这个表示这两个css将合并到 assets/styles/index.css--><link rel="stylesheet" href="assets/styles/index.css"></head><body><h4>好可爱的猫咪</h4><div><img src="/assets/images/cat.jpg"></div><div><img src="/public/GIF.gif" alt=""></div><script src="/assets/scripts/index.js"></script><!-- node_modules目录下的文件是没有被构建到dist目录的，所以可以用gulp-useref模块将这两个文件合并到 assets/scripts/vendor.js中--><script src="assets/scripts/vendor.js"></script></body></html>
