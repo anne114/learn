@@ -1,8 +1,0 @@
-@import "mixins.scss";
-$color: #333;
-body {
-  color: $color;
-}
-h4 {
-  @include WH(500, 30);
-}
