@@ -1,4 +1,14 @@
 const path = require('path');
+const webpack = require('webpack');
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// 自己编写的清除注释的plugin
+const cleanNote = require('./myplugins/cleanNote');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
 module.exports = {
   //入口文件，为相对路径时，前面的./不能省略
   entry: './src/index.js',
@@ -6,10 +16,10 @@ module.exports = {
   output: {
     filename: 'index.js', //打包之后的文件名
     path: path.join(__dirname, 'dist'), //path必须要是绝对路径，因此需要使用path.join()方法，得到output的绝对路径
-    publicPath: 'dist/' //定义从哪个路径加载打包之后的静态资源文件，页面默认是从根目录下加载资源文件
+    publicPath: '/' //定义从哪个路径加载打包之后的静态资源文件，页面默认是从根目录下加载资源文件,实际应用中静态资源文件都是放在cdn上的，所以在生产环境，该值为cdn资源地址
   },
   // 打包模式：有development、production、none（不常用）三种模式，每种模式会对应地启动一些插件，如development模式会自动优化打包速度，不会压缩代码，而production模式会自动压缩代码等，这在某种程度上减少了我们的工作
-  mode: 'none',
+  // mode: 'none',
   // webpack只能打包js文件，其他资源需要使用对应的loader，该loader会将资源转化为js模块
   module: {
     // 配置打包规则，必须包含test和use字段，test：通过正则找到对应的文件类型，use：使用对应的loader加载资源
@@ -41,7 +51,72 @@ module.exports = {
           //   presets: ['@babel/preset-env']
           // }
         }
+      },
+      {
+        test: /\.md$/,
+        use: './markdown-loader' //use不仅可以使用模块名称，还可以使用相对路径，跟require一样
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
       }
     ]
+  },
+  plugins: [
+    // 构建时删除输出目录
+    new CleanWebpackPlugin(),
+    // 创建html文件，可通过配置向html模板文件中传值
+    new HtmlWebpackPlugin({
+      title: 'html webpack sample',
+      author: 'anne',
+      meta: {
+        "viewport": "width=device-width"
+      },
+      template: './index.html'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'about.html'
+    }),
+    // 接收一个数组，每个元素是要copy的文件，可以是一个通配符，可以是一个文件夹，可以是一个具体的路径
+    new CopyWebpackPlugin([
+      'public/**' //这种写法打包到输出目录时会保留public目录，'public'这种写法不会保留public目录
+    ]),
+    // 在vue文件中，有template、style、script三大顶级元素，这三个元素需要使用不同的loader去处理，此插件就是用于处理这个的
+    new VueLoaderPlugin(),
+    // 向js代码中注入全局环境变量，在js文件中可以直接使用这些变量,需要使用JSON.stringify进行转义
+    new webpack.DefinePlugin({
+      BASE_URL: JSON.stringify('http://www.baidu.com')
+    }),
+    // 自定写的一个插件，去除/*****/注释
+    new cleanNote()
+  ],
+  // 设置开发环境配置
+  devServer: {
+    // 只有打包到输出文件的资源才能通过服务器访问到，如果想访问其他资源，可以通过contentBase设置，其值可以是一个字符串或者数组
+    contentBase: './public',
+    // 添加代理配置,是一个对象，key值是匹配的地址规则，value是代理的配置
+    proxy: {
+      // 如果请求是以/api开头的，则请求会被代理到target所设置的地址
+      // pathRewrite会把匹配到的字符串（key值）替换为它对应的value值
+      // ex:http://localhost:8080/api/user => http://test.com/user
+      '/api': {
+        target: 'http://test.com',
+        pathRewrite: {
+          '^/api': ''
+        },
+        // 在发起请求的过程中会把请求来源（页面地址）发送给服务器，有些服务器是会校验请求来源的，此时可以通过此设置将请求来源配置成请求地址
+        // ex：配置之后，请求来源就从localhost变成了test.com
+        changeOrigin: true
+      }
+    },
+    // HMR:Hot Module Replacement,模块热更新：实现模块变化时页面不刷新也可以实时更新模块
+    hot: true
+  },
+  devtool: 'cheap-module-source-map',
+  // Tree Shaking：删除没有被引用的代码，在生产模式下自动开启了
+  optimization: {
+    usedExports: true,
+    minimize:true,
+    concatenateModules:true
   }
 }
