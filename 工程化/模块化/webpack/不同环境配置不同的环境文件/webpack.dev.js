@@ -1,25 +1,33 @@
-const webpack = require('webpack');
-const WebpackMerge = require('webpack-merge');
-const common = require('./webpack.common.js');
-const DefineConfig = require('./config/dev.config.js');
+const webpack = require("webpack");
+const WebpackMerge = require("webpack-merge");
+const common = require("./webpack.common.js");
+const DefineConfig = require("./config/dev.config.js");
 module.exports = WebpackMerge(common, {
   devServer: {
-    mode: 'development',
-    contentBase: './public',
+    mode: "development",
+    contentBase: "./public",
     proxy: {
-      '/api': {
-        target: 'http://test.com',
+      "/api": {
+        target: "http://test.com",
         pathRewrite: {
-          '^/api': ''
+          "^/api": ""
         },
         changeOrigin: true
       }
     },
     hot: true
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      }
+    ]
+  },
   plugins: [
     new webpack.DefinePlugin({
       ...DefineConfig
     })
   ]
-})
+});
